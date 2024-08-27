@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <link rel="stylesheet" href="bootstrap/dist/css/bootstrap.min.css">
+  <link rel="stylesheet" href="fontawesome/css/all.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css">
+  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+
+  <title>Home</title>
+
+</head>
+<body>
+        <header>
+          <nav class="navbar navbar-expand-lg navbar-light bg-light shadow-sm">
+            <div class="container">
+              <a class="navbar-brand" href="#"><span class="text-primary">I</span>-Sante</a>
+              <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupport" aria-controls="navbarSupport" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+              </button>
+              <div class="collapse navbar-collapse" id="navbarSupport">
+                <ul class="navbar-nav ml-auto">
+                  <li class="nav-item active">
+                    <a class="nav-link" href="index.html"><i class="fas fa-home"></i> Home</a>
+                  </li>
+                  <li class="nav-item">
+                    <a class="nav-link" href="chatbotV1.html">Chatbot V1</a>
+                  </li>
+                  <li class="nav-item">
+                    <a class="nav-link" href="chatbot_client.html">Chatbot V2</a>
+                  </li>
+                  <li class="nav-item">
+                    <a class="nav-link" href="api_endpoints.html">API Endpoints</a>
+                  </li>
+                  <li class="nav-item">
+                    <a class="nav-link" href="/webservices">Web Service [GET}</a>
+                  </li>
+                  <li class="nav-item">
+                    <a class="nav-link" href="list_adherents.html">Members</a>
+                  </li>
+                  <li class="nav-item">
+                    <a class="nav-link" href="list_dossiers.html">Cases</a>
+                  </li>
+                  <li class="nav-item">
+                    <a class="nav-link" href="list_reclamations.html">Complaints</a>
+                  </li>
+                  <li class="nav-item">
+                    <a class="nav-link" href="list_malades_en_charge.html">Patients in Care</a>
+                  </li>
+                  <li class="nav-item">
+                    <a class="btn btn-primary ml-lg-3" href="login.html">Login / Register</a>
+                  </li>
+                </ul>
+              </div> <!-- .navbar-collapse -->
+            </div> <!-- .container -->
+          </nav>
+        </header>
+
+  <div class="container">
+
+   <div class="box card">
+      <div class="card-body">
+        <h5 class="card-title">Execute GET Request</h5>
+        <form id="curlForm">
+          <div class="form-group">
+            <label for="endpoint">Enter Endpoint:</label>
+            <input type="text" class="form-control" id="endpoint" placeholder="API Endpoint" required>
+          </div>
+          <button type="submit" class="btn btn-primary">Execute Request</button>
+        </form>
+        <div id="response" class="mt-3"></div>
+      </div>
+    </div>
+    <a href="../static/chatbot_client.html">chatbot</a>
+    <form>
+
+      <div class="container">
+        <h3>Input:</h3>
+        <div class="form-group">
+          <label for="input">Enter Your Text Here!!!</label>
+          <textarea id="input" class="form-control" rows="4"></textarea>
+        </div>
+        <div class="form-group">
+          <label for="type">Select Type</label>
+          <select class="form-control" id="type" onchange="ner(this.value)">
+            <option value="">Select Type</option>
+            <option value="PERSON">Person</option>
+            <option value="CITY">City</option>
+            <option value="STATE_OR_PROVINCE">State or Province</option>
+            <option value="COUNTRY">Country</option>
+            <option value="TITLE">(Job) Title</option>
+            <option value="EMAIL">Email</option>
+          </select>
+        </div>
+        <h3>Output:</h3>
+        <div clas="form-group" id="result"></div>
+      </div>
+    </form>
+
+
+    <img src="images/7.jpg" class="d-block w-100" alt="First slide">
+  </div>
+        <script type="text/javascript">
+
+          function ner(type) {
+
+            var input = $("#input").val();
+
+            $.ajax({
+              type: 'POST',
+              url: "http://localhost:10000/api/nlp/ner?type="+type,
+              contentType: 'text/plain; charset=utf-8',
+              data: input,
+              success: function(response) {
+                var result = "";
+                $.each(response, function (index, value) {
+                  result = result + "<span class='badge badge-success'>"+ value + "</span>&nbsp;";
+                })
+                $("#result").html(result);
+              }
+            });
+          }
+
+        </script>
+
+        <script src="../../../../../NLPChatbot/src/main/resources/static/js/index-script.js"></script>
+
+
+</body>
+</html>

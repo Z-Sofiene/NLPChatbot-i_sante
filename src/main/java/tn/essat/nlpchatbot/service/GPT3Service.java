@@ -1,5 +1,6 @@
 package tn.essat.nlpchatbot.service;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -8,8 +9,8 @@ import org.springframework.web.client.RestTemplate;
 
 @Service
 public class GPT3Service {
-
-    private static final String API_KEY = "YOUR_API_KEY";
+    @Value("${openai.api.key}")
+    private String API_KEY;
     private static final String GPT3_API_URL = "https://api.openai.com/v1/chat/completions";
 
     public String getChatbotResponse(String prompt) {

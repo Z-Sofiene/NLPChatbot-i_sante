@@ -1,0 +1,118 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chatbot Interface</title>
+    <link rel="stylesheet" href="bootstrap/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="fontawesome/css/all.css">
+    <style>
+        .chat-container {
+            max-width: 600px;
+            margin: auto;
+            padding: 20px;
+        }
+        .chat-box {
+            border: 1px solid #ccc;
+            padding: 10px;
+            height: 300px;
+            overflow-y: auto;
+        }
+        .chat-input {
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+          <nav class="navbar navbar-expand-lg navbar-light bg-light shadow-sm">
+            <div class="container">
+              <a class="navbar-brand" href="#"><span class="text-primary">I</span>-Sante</a>
+              <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupport" aria-controls="navbarSupport" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+              </button>
+              <div class="collapse navbar-collapse" id="navbarSupport">
+                <ul class="navbar-nav ml-auto">
+                  <li class="nav-item active">
+                    <a class="nav-link" href="index.html"><i class="fas fa-home"></i> Home</a>
+                  </li>
+                  <li class="nav-item">
+                    <a class="nav-link" href="chatbotV1.html">Chatbot V1</a>
+                  </li>
+                  <li class="nav-item">
+                    <a class="nav-link" href="chatbot_client.html">Chatbot V2</a>
+                  </li>
+                  <li class="nav-item">
+                    <a class="nav-link" href="api_endpoints.html">API Endpoints</a>
+                  </li>
+                  <li class="nav-item">
+                    <a class="nav-link" href="/webservices">Web Service [GET}</a>
+                  </li>
+                  <li class="nav-item">
+                    <a class="nav-link" href="list_adherents.html">Members</a>
+                  </li>
+                  <li class="nav-item">
+                    <a class="nav-link" href="list_dossiers.html">Cases</a>
+                  </li>
+                  <li class="nav-item">
+                    <a class="nav-link" href="list_reclamations.html">Complaints</a>
+                  </li>
+                  <li class="nav-item">
+                    <a class="nav-link" href="list_malades_en_charge.html">Patients in Care</a>
+                  </li>
+                  <li class="nav-item">
+                    <a class="btn btn-primary ml-lg-3" href="login.html">Login / Register</a>
+                  </li>
+                </ul>
+              </div> <!-- .navbar-collapse -->
+            </div> <!-- .container -->
+          </nav>
+        </header>
+
+
+    <div class="chat-container">
+        <div class="chat-box" id="chat-box"></div>
+        <input type="text" id="user-input" class="form-control chat-input" placeholder="Ask me anything...">
+        <button id="send-btn" class="btn btn-primary mt-2">Send</button>
+    </div>
+
+    <script src="show-adherents.js"></script>
+    <script>
+        document.getElementById('send-btn').addEventListener('click', function () {
+            const userInput = document.getElementById('user-input').value;
+            // Function to handle user input and communicate with the backend chatbot API
+            processUserInput(userInput);
+        });
+
+        function addToChatBox(message, sender) {
+            const chatBox = document.getElementById('chat-box');
+            const messageElement = document.createElement('div');
+            messageElement.classList.add('message', sender);
+            messageElement.innerText = message;
+            chatBox.appendChild(messageElement);
+            chatBox.scrollTop = chatBox.scrollHeight;
+        }
+
+        function processUserInput(input) {
+
+            addToChatBox(input, 'user');
+
+            fetch('/api/chatbot', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ message: input })
+            })
+            .then(response => response.json())
+            .then(data => {
+                addToChatBox(data.response, 'bot');
+            })
+            .catch(error => console.error('Error:', error));
+        }
+    </script>
+</body>
+</html>
+

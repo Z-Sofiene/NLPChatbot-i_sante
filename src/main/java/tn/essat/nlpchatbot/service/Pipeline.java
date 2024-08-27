@@ -1,31 +1,46 @@
 package tn.essat.nlpchatbot.service;
 
+import edu.stanford.nlp.ling.CoreAnnotations;
+import edu.stanford.nlp.ling.CoreLabel;
+import edu.stanford.nlp.pipeline.Annotation;
 import edu.stanford.nlp.pipeline.StanfordCoreNLP;
-import org.springframework.context.annotation.Bean;
+import edu.stanford.nlp.util.CoreMap;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.Properties;
+import java.util.HashSet;
+
+import java.util.Set;
+
 
 @Service
 public class Pipeline {
-    private static final Properties properties;
-    private static final String PROPERTIES_NAME = "tokenize,ssplit,pos,lemma,ner";
-    private static StanfordCoreNLP stanfordCoreNLP;
 
-    static {
-        properties = new Properties();
-        properties.setProperty("annotators", PROPERTIES_NAME);
+    private final StanfordCoreNLP stanfordCoreNLP;
+
+    @Autowired
+    public Pipeline(StanfordCoreNLP stanfordCoreNLP) {
+        this.stanfordCoreNLP = stanfordCoreNLP;
     }
 
-    @Bean(name = "coreNLP")
-    public StanfordCoreNLP stanfordCoreNLP() {
-        if (stanfordCoreNLP == null) {
-            synchronized (Pipeline.class) {
-                if (stanfordCoreNLP == null) {
-                    stanfordCoreNLP = new StanfordCoreNLP(properties);
+    public Set<String> extractEntities(String text) {
+        Set<String> entities = new HashSet<>();
+
+        Annotation annotation = new Annotation(text);
+
+        // Annotate the text using StanfordCoreNLP
+        stanfordCoreNLP.annotate(annotation);
+
+        // Extract named entities
+        for (CoreMap sentence : annotation.get(CoreAnnotations.SentencesAnnotation.class)) {
+            for (CoreLabel token : sentence.get(CoreAnnotations.TokensAnnotation.class)) {
+                String ner = token.get(CoreAnnotations.NamedEntityTagAnnotation.class);
+                if (!"O".equals(ner)) { // "O" denotes no entity
+                    entities.add(token.word());
                 }
             }
         }
-        return stanfordCoreNLP;
+
+        return entities;
     }
 }
