@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Chatbot</title>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body>
+<div class="container mt-5">
+  <h1 class="text-center">Chat with GPT-3</h1>
+
+  <div class="card mt-4">
+    <div class="card-body">
+      <form id="chat-form">
+        <div class="form-group">
+          <label for="message">Your Message</label>
+          <input type="text" class="form-control" id="message" placeholder="Enter your message here" required>
+        </div>
+        <button type="submit" class="btn btn-primary">Send</button>
+      </form>
+
+      <div class="mt-3">
+        <h4>Chatbot Response:</h4>
+        <p id="chatbot-response"></p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  const form = document.getElementById('chat-form');
+  const responseElement = document.getElementById('chatbot-response');
+
+  form.addEventListener('submit', async function (event) {
+    event.preventDefault();
+
+    const userMessage = document.getElementById('message').value;
+
+    const response = await fetch('/chatbot/message', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ message: userMessage })
+    });
+
+    const data = await response.json();
+    responseElement.textContent = data.response;
+  });
+</script>
+</body>
+</html>

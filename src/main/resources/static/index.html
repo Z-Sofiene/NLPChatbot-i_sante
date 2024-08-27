@@ -26,7 +26,7 @@
                     <a class="nav-link" href="index.html"><i class="fas fa-home"></i> Home</a>
                   </li>
                   <li class="nav-item">
-                    <a class="nav-link" href="chatbotV1.html">Chatbot V1</a>
+                    <a class="nav-link" href="chatbot.html">Chatbot V1</a>
                   </li>
                   <li class="nav-item">
                     <a class="nav-link" href="chatbot_client.html">Chatbot V2</a>
@@ -73,7 +73,7 @@
         <div id="response" class="mt-3"></div>
       </div>
     </div>
-    <a href="../static/chatbot_client.html">chatbot</a>
+    <a href="chatbot_client.html">chatbot</a>
     <form>
 
       <div class="container">
@@ -94,38 +94,43 @@
             <option value="EMAIL">Email</option>
           </select>
         </div>
+        <button class="btn btn-primary mt-2" onclick="ner($('#type').val())">Submit</button>
+
         <h3>Output:</h3>
-        <div clas="form-group" id="result"></div>
+        <div class="form-group" id="result"></div>
       </div>
-    </form>
-
-
-    <img src="images/7.jpg" class="d-block w-100" alt="First slide">
-  </div>
-        <script type="text/javascript">
-
-          function ner(type) {
-
-            var input = $("#input").val();
-
+      <img src="images/7.jpg" class="d-block w-100" alt="First slide">
+    </form></div>
+      <script type="text/javascript">
+        function ner(type) {
+          var input = $("#input").val();
+          if (type && input) {
             $.ajax({
               type: 'POST',
-              url: "http://localhost:10000/api/nlp/ner?type="+type,
+              url: "http://localhost:10000/api/nlp/ner?type=" + type,
               contentType: 'text/plain; charset=utf-8',
               data: input,
               success: function(response) {
                 var result = "";
-                $.each(response, function (index, value) {
-                  result = result + "<span class='badge badge-success'>"+ value + "</span>&nbsp;";
-                })
+                $.each(response, function(index, value) {
+                  result += "<span class='badge bg-success'>" + value + "</span>&nbsp;";
+                });
                 $("#result").html(result);
+              },
+              error: function() {
+                $("#result").html("<span class='text-danger'>Error processing the request.</span>");
               }
             });
+          } else {
+            $("#result").html("<span class='text-warning'>Please enter text and select a type.</span>");
           }
+        }
+      </script>
 
-        </script>
 
-        <script src="../../../../../NLPChatbot/src/main/resources/static/js/index-script.js"></script>
+
+
+        <script src="js/index-script.js"></script>
 
 
 </body>
