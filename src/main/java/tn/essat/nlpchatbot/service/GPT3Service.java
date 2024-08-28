@@ -13,12 +13,13 @@ import org.json.JSONArray;
 @Service
 public class GPT3Service {
 
-    @Value("openai.api.key")
+    @Value("ApiKey")
     private String apiKey;
 
     private final RestTemplate restTemplate = new RestTemplate();
 
-    private final String OPENAI_API_URL = "https://api.openai.com/v1/chat/completions";
+    @Value("${ApiWebService}")
+    private String OPENAI_API_URL;
 
     public String getChatbotResponse(String userInput) {
         // Set up headers
@@ -46,8 +47,7 @@ public class GPT3Service {
         // Parse the response
         JSONObject jsonResponse = new JSONObject(response.getBody());
         JSONArray choices = jsonResponse.getJSONArray("choices");
-        String gptResponse = choices.getJSONObject(0).getJSONObject("message").getString("content");
 
-        return gptResponse;
+        return choices.getJSONObject(0).getJSONObject("message").getString("content");
     }
 }

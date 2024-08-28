@@ -11,55 +11,79 @@
     <title>Reclamation Form</title>
 
 </head>
-    <body>
-    <a href="../static/chatbot_client.html">chatbot</a>
-    <form>
-
-        <div class="container">
-            <h3>Input:</h3>
-            <div class="form-group">
-                <label for="input">Enter Your Text Here!!!</label>
-                <textarea id="input" class="form-control" rows="4"></textarea>
-            </div>
-            <div class="form-group">
-                <label for="type">Select Type</label>
-                <select class="form-control" id="type" onchange="ner(this.value)">
-                    <option value="">Select Type</option>
-                    <option value="PERSON">Person</option>
-                    <option value="CITY">City</option>
-                    <option value="STATE_OR_PROVINCE">State or Province</option>
-                    <option value="COUNTRY">Country</option>
-                    <option value="TITLE">(Job) Title</option>
-                    <option value="EMAIL">Email</option>
-                </select>
-            </div>
-            <h3>Output:</h3>
-            <div clas="form-group" id="result"></div>
+<div class="container mt-4">
+    <h3>Input:</h3>
+    <form id="ner-form">
+        <div class="form-group">
+            <label for="input">Enter Your Text Here:</label>
+            <textarea id="input" class="form-control" rows="4"></textarea>
         </div>
+        <div class="form-group">
+            <label for="type">Select Type:</label>
+            <select class="form-control" id="type">
+                <option value="">Select Type</option>
+                <option value="PERSON">Person</option>
+                <option value="ORGANIZATION">Organization</option>
+                <option value="LOCATION">Location</option>
+                <option value="DATE">Date</option>
+                <option value="TIME">Time</option>
+                <option value="MEDICAL_CONDITION">Medical Condition</option>
+                <option value="TREATMENT">Treatment</option>
+                <option value="MEDICATION">Medication</option>
+                <option value="INSURANCE_POLICY">Insurance Policy</option>
+                <option value="COMPLAINT_TYPE">Complaint Type</option>
+                <option value="APPOINTMENT">Appointment</option>
+                <option value="MEDICAL_PROCEDURE">Medical Procedure</option>
+                <option value="DIAGNOSIS">Diagnosis</option>
+                <option value="SYMPTOMS">Symptoms</option>
+                <option value="INSURANCE_CLAIM">Insurance Claim</option>
+                <option value="CONTACT_INFO">Contact Info</option>
+                <option value="ADDRESS">Address</option>
+                <option value="EMERGENCY">Emergency</option>
+                <option value="PATIENT_ID">Patient ID</option>
+            </select>
+        </div>
+        <button type="submit" class="btn btn-primary">Submit</button>
     </form>
 
-    <script type="text/javascript">
+    <h3 class="mt-4">Output:</h3>
+    <div id="result" class="form-group"></div>
+</div>
 
-        function ner(type) {
+<script>
+    document.getElementById("ner-form").addEventListener("submit", function(event) {
+        event.preventDefault(); // Prevent the form from submitting traditionally
 
-            var input = $("#input").val();
+        const input = document.getElementById("input").value;
+        const type = document.getElementById("type").value;
 
-            $.ajax({
-                type: 'POST',
-                url: "http://localhost:10000/api/nlp/ner?type="+type,
-                contentType: 'text/plain; charset=utf-8',
-                data: input,
-                success: function(response) {
-                    var result = "";
-                    $.each(response, function (index, value) {
-                        result = result + "<span class='badge badge-success'>"+ value + "</span>&nbsp;";
-                    })
-                    $("#result").html(result);
+        fetch(`http://localhost:10000/api/nlp/ner?type=${type}`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'text/plain; charset=utf-8'
+            },
+            body: input
+        })
+            .then(response => response.json())
+            .then(data => {
+                const resultDiv = document.getElementById("result");
+                resultDiv.innerHTML = '';
+                if (data.length > 0) {
+                    data.forEach(value => {
+                        const span = document.createElement('span');
+                        span.className = 'badge badge-success';
+                        span.textContent = value;
+                        resultDiv.appendChild(span);
+                        resultDiv.appendChild(document.createTextNode(' ')); // Add space between badges
+                    });
+                } else {
+                    resultDiv.textContent = 'No entities found.';
                 }
+            })
+            .catch(error => {
+                console.error('Error:', error);
             });
-        }
-
-    </script>
-
-    </body>
-    </html>
+    });
+</script>
+</body>
+</html>

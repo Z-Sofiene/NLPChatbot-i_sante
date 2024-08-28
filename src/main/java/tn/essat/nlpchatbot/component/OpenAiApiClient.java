@@ -20,7 +20,7 @@ public class OpenAiApiClient {
 	}
 
 	@Value("openai.api_key")
-	private String openaiApiKey;
+	private String openaiApiKey = "${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}";
 
 	private final HttpClient client = HttpClient.newHttpClient();
 
@@ -36,7 +36,7 @@ public class OpenAiApiClient {
 	private URI selectUri(OpenAiService service) {
 		return URI.create(switch (service) {
 		case DALL_E -> "https://api.openai.com/v1/images/generations";
-		case GPT_3 -> "https://api.openai.com/v1/completions";
+		case GPT_3 -> "https://api.openai.com/v1/chat/completions";
 		});
 	}
 

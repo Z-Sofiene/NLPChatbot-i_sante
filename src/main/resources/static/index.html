@@ -58,7 +58,6 @@
             <option value="EMAIL">Email</option>
           </select>
         </div>
-        <button class="btn btn-primary mt-2" onclick="ner($('#type').val())">Submit</button>
 
         <h3>Output:</h3>
         <div class="form-group" id="result"></div>
@@ -71,7 +70,7 @@
           if (type && input) {
             $.ajax({
               type: 'POST',
-              url: "http://localhost:10000/api/nlp/ner?type=" + type,
+              url: "api/nlp/ner?type=" + type,
               contentType: 'text/plain; charset=utf-8',
               data: input,
               success: function(response) {
