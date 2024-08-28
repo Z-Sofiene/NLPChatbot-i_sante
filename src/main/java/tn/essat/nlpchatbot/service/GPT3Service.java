@@ -13,7 +13,7 @@ import org.json.JSONArray;
 @Service
 public class GPT3Service {
 
-    @Value("${openai.api.key}")
+    @Value("openai.api.key")
     private String apiKey;
 
     private final RestTemplate restTemplate = new RestTemplate();

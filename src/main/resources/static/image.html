@@ -1,0 +1,83 @@
+<!DOCTYPE HTML>
+<html lang="en">
+<head>
+	<meta charset="utf-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+	<title>DALL-E & Spring demo</title>
+	<link rel="stylesheet" href="bootstrap/main.css" />
+	<link rel="stylesheet" href="/bootstrap/dist/css/bootstrap.min.css">
+	<link rel="stylesheet" href="/fontawesome/css/all.css">
+</head>
+<body>
+
+<!--  Start of  NAVBAR -->
+
+<script src="js/navbar.js"></script>
+<div id="navbar-placeholder"></div>
+
+<!--   End of NAVBAR    -->
+
+
+<main role="main" class="container">
+	<div class="starter-template">
+		<h1>DALL-E API at<br/>agile-coding.blogspot.com</h1>
+		<h2>Describe image</h2>
+
+		<!-- Form submission will be handled with JavaScript -->
+		<form id="dalle-form">
+			<fieldset>
+				<div class="form-group">
+					<input type="text" id="prompt" name="prompt" required autofocus/>
+				</div>
+				<div class="row">
+					<input type="submit" value="Send" />
+				</div>
+			</fieldset>
+		</form>
+
+		<h2 id="image-title" style="display: none;">DALL-E draw for you:</h2>
+		<img id="dalle-image" src="" alt="Picture drawn by DALL-E" style="display: none;" />
+	</div>
+</main>
+
+<script>
+	// Handle the form submission using JavaScript
+	document.getElementById("dalle-form").addEventListener("submit", async function(event) {
+		event.preventDefault(); // Prevent the form from submitting traditionally
+
+		// Get the prompt value from the input field
+		const prompt = document.getElementById("prompt").value;
+
+		try {
+			// Send an API request to /image
+			const response = await fetch("/image", {
+				method: "POST",
+				headers: {
+					"Content-Type": "application/json"
+				},
+				body: JSON.stringify({ prompt: prompt })
+			});
+
+			// Check if the response is ok (status code in the range 200-299)
+			if (!response.ok) {
+				throw new Error(`HTTP error! Status: ${response.status}`);
+			}
+
+			const data = await response.json();
+
+			// If the API response contains an image URI, display it
+			if (data.imageUri) {
+				document.getElementById("image-title").style.display = "block";
+				const imageElement = document.getElementById("dalle-image");
+				imageElement.src = data.imageUri;
+				imageElement.style.display = "block";
+			} else {
+				console.error("No image URI found in the response.");
+			}
+		} catch (error) {
+			console.error("Error:", error);
+		}
+	});
+</script>
+</body>
+</html>

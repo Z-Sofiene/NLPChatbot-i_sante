@@ -1,4 +1,4 @@
-package tn.essat.nlpchatbot.controller;
+package tn.essat.nlpchatbot.controller.chatbot;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;

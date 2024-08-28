@@ -1,0 +1,72 @@
+<!DOCTYPE HTML>
+<html lang="en">
+<head>
+	<meta charset="utf-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+	<title>ChatGPT & Spring demo</title>
+	<link rel="stylesheet" href="bootstrap/main.css" />
+	<link rel="stylesheet" href="/bootstrap/dist/css/bootstrap.min.css">
+	<link rel="stylesheet" href="/fontawesome/css/all.css">
+</head>
+<body>
+
+<!--  Start of  NAVBAR -->
+
+<script src="js/navbar.js"></script>
+<div id="navbar-placeholder"></div>
+
+<!--   End of NAVBAR    -->
+
+
+<main role="main" class="container">
+	<div class="starter-template">
+		<h1>ChatGPT API at<br/>agile-coding.blogspot.com</h1>
+		<h2>Send message to ChatGPT</h2>
+
+		<!-- Form submission will be handled with JavaScript -->
+		<form id="chatgpt-form">
+			<fieldset>
+				<div class="form-group">
+					<input type="text" id="prompt" name="prompt" required autofocus/>
+				</div>
+				<div class="row">
+					<input type="submit" value="Send" />
+				</div>
+			</fieldset>
+		</form>
+
+		<h2 id="response-title" style="display: none;">ChatGPT responded with: </h2>
+		<p id="response-text"></p>
+	</div>
+</main>
+
+<script src="jquery/jquery.min.js"></script>
+<script>
+	// Handle the form submission using JavaScript
+	document.getElementById("chatgpt-form").addEventListener("submit", function(event) {
+		event.preventDefault(); // Prevent the form from submitting the traditional way
+
+		// Get the value from the input field
+		const prompt = document.getElementById("prompt").value;
+
+		// Send an API request to /api/gpt3
+		fetch("/api/gpt3", {
+			method: "POST",
+			headers: {
+				"Content-Type": "application/json"
+			},
+			body: JSON.stringify({ prompt: prompt })
+		})
+				.then(response => response.json())
+				.then(data => {
+					// Display the response from the server
+					document.getElementById("response-title").style.display = "block";
+					document.getElementById("response-text").textContent = data.response;
+				})
+				.catch(error => {
+					console.error("Error:", error);
+				});
+	});
+</script>
+</body>
+</html>
